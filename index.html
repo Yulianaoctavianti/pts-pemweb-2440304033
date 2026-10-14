@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DapurStock - Dashboard Produk UMKM Kue Kering</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/app.js" type="module" defer></script>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <h1>DapurStock</h1>
+      <p>Dashboard pemantau harga dan stok bahan untuk UMKM kue kering rumahan</p>
+      <p class="identitas">Yuliana Octavianti · 2440304033 · Kelas A1_TEKOM_24</p>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section id="ringkasan" aria-labelledby="judul-ringkasan">
+      <h2 id="judul-ringkasan">Ringkasan Data</h2>
+      <div class="stats">
+        <p>Rata-rata harga: <strong id="stat-rata">-</strong></p>
+        <p>Produk termahal: <strong id="stat-termahal">-</strong></p>
+      </div>
+    </section>
+
+    <section id="preferensi" aria-labelledby="judul-preferensi">
+      <h2 id="judul-preferensi">Preferensi Pantauan</h2>
+      <form id="form-preferensi" novalidate>
+        <fieldset>
+          <legend>Pilih minimal satu kategori yang ingin dipantau</legend>
+          <label><input type="checkbox" name="kategori" value="groceries"> Bahan makanan</label>
+          <label><input type="checkbox" name="kategori" value="kitchen-accessories"> Peralatan dapur</label>
+          <label><input type="checkbox" name="kategori" value="beauty"> Kecantikan</label>
+        </fieldset>
+        <p id="pesan-form" role="alert"></p>
+        <button type="submit">Simpan Preferensi</button>
+      </form>
+    </section>
+
+    <section id="produk" aria-labelledby="judul-produk">
+      <h2 id="judul-produk">Daftar Produk</h2>
+
+      <div class="kontrol">
+        <label for="cari">Cari produk</label>
+        <input type="search" id="cari" placeholder="Ketik nama produk...">
+
+        <label for="per-halaman">Tampil per halaman</label>
+        <select id="per-halaman">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="20">20</option>
+        </select>
+      </div>
+
+      <p id="status" aria-live="polite"></p>
+      <div id="daftar-produk" class="grid"></div>
+
+      <nav class="pagination" aria-label="Navigasi halaman">
+        <button id="btn-prev" type="button">Sebelumnya</button>
+        <span id="info-halaman">Halaman 1 dari 1</span>
+        <button id="btn-next" type="button">Berikutnya</button>
+      </nav>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Yuliana Octavianti · 2440304033 · Kelas A1_TEKOM_24</p>
+      <p>Data contoh dari DummyJSON</p>
+    </div>
+  </footer>
+
+</body>
+</html>
