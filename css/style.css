@@ -150,3 +150,122 @@ button:disabled {
   font-weight: 600;
 }
 
+#pesan-form.error { color: var(--error); }
+#pesan-form.sukses { color: var(--sukses); }
+
+/* ===== Kontrol & daftar produk ===== */
+.kontrol {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+#status {
+  min-height: 1.5em;
+  font-weight: 600;
+}
+
+#status.error { color: var(--error); }
+#status.sukses { color: var(--sukses); }
+#status.loading { color: var(--ungu); }
+
+#status.loading::before {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 8px;
+  vertical-align: -0.15em;
+  border: 3px solid var(--garis);
+  border-top-color: var(--ungu);
+  border-radius: 50%;
+  animation: putar 0.8s linear infinite;
+}
+
+@keyframes putar {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #status.loading::before { animation: none; }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.card {
+  border: 1px solid var(--garis);
+  border-radius: var(--radius);
+  padding: 12px;
+  background: var(--pink-muda);
+}
+
+.card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+  background: var(--putih);
+}
+
+.card h3 {
+  margin: 8px 0 4px;
+  font-size: 1rem;
+}
+
+.card p {
+  margin: 2px 0;
+  font-size: 0.9rem;
+}
+
+/* ===== Pagination ===== */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+/* ===== Fokus keyboard ===== */
+:focus-visible {
+  outline: 3px solid var(--pink);
+  outline-offset: 2px;
+}
+
+/* ===== Tablet (>= 600px) ===== */
+@media (min-width: 600px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .kontrol {
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+  }
+
+  fieldset label {
+    display: inline-block;
+    margin-right: 16px;
+  }
+
+  input[type="search"],
+  select {
+    width: auto;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ===== Desktop (>= 1024px) ===== */
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
