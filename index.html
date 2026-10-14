@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DapurStock - Dashboard Produk UMKM Kue Kering</title>
   <link rel="stylesheet" href="css/style.css">
-  <script src="js/app.js" type="module" defer></script>
+  <script src="js/app.js" type="module"></script>
 </head>
 <body>
 
   <header class="site-header">
     <div class="container">
       <h1>DapurStock</h1>
-      <p>Dashboard pemantau harga dan stok bahan untuk UMKM kue kering rumahan</p>
+      <p>Dashboard pemantau harga dan stok bahan serta peralatan dapur untuk UMKM kue kering rumahan</p>
       <p class="identitas">Yuliana Octavianti · 2440304033 · Kelas A1_TEKOM_24</p>
     </div>
   </header>
@@ -24,6 +24,7 @@
       <div class="stats">
         <p>Rata-rata harga: <strong id="stat-rata">-</strong></p>
         <p>Produk termahal: <strong id="stat-termahal">-</strong></p>
+        <p>Jumlah kategori: <strong id="stat-kategori">-</strong></p>
       </div>
     </section>
 
@@ -32,9 +33,9 @@
       <form id="form-preferensi" novalidate>
         <fieldset>
           <legend>Pilih minimal satu kategori yang ingin dipantau</legend>
-          <label><input type="checkbox" name="kategori" value="groceries"> Bahan makanan</label>
-          <label><input type="checkbox" name="kategori" value="kitchen-accessories"> Peralatan dapur</label>
-          <label><input type="checkbox" name="kategori" value="beauty"> Kecantikan</label>
+          <label><input type="checkbox" name="kategori" value="groceries" checked> Bahan makanan</label>
+          <label><input type="checkbox" name="kategori" value="kitchen-accessories" checked> Peralatan dapur</label>
+          <label><input type="checkbox" name="kategori" value="home-decoration"> Dekorasi dan kemasan</label>
         </fieldset>
         <p id="pesan-form" role="alert"></p>
         <button type="submit">Simpan Preferensi</button>
@@ -56,6 +57,10 @@
         </select>
       </div>
 
+      <div id="loading" class="loading" hidden>
+        <span class="spinner" aria-hidden="true"></span>
+        <span>Memuat data produk...</span>
+      </div>
       <p id="status" aria-live="polite"></p>
       <div id="daftar-produk" class="grid"></div>
 
