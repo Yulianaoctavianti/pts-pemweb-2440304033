@@ -1,5 +1,6 @@
 // ===== Konfigurasi =====
 const API_URL = 'https://dummyjson.com/products?limit=0';
+const KUNCI_PREFERENSI = 'dapurstock-kategori';
 
 // Produk yang tidak cocok dengan konteks UMKM kue kering (dicocokkan dengan judul produk)
 const KATA_DIKECUALIKAN = ['cat food', 'dog food'];
@@ -7,18 +8,23 @@ const KATA_DIKECUALIKAN = ['cat food', 'dog food'];
 // ===== Elemen DOM =====
 const statusEl = document.querySelector('#status');
 const loadingEl = document.querySelector('#loading');
+const loadingTeksEl = document.querySelector('#loading-teks');
 const daftarEl = document.querySelector('#daftar-produk');
 const statRataEl = document.querySelector('#stat-rata');
 const statTermahalEl = document.querySelector('#stat-termahal');
 const statKategoriEl = document.querySelector('#stat-kategori');
+const cariEl = document.querySelector('#cari');
 const perHalamanEl = document.querySelector('#per-halaman');
 const prevEl = document.querySelector('#btn-prev');
 const nextEl = document.querySelector('#btn-next');
 const infoHalamanEl = document.querySelector('#info-halaman');
+const formEl = document.querySelector('#form-preferensi');
+const pesanFormEl = document.querySelector('#pesan-form');
 
 // ===== State =====
 let semuaProduk = [];
 let kategoriAktif = ['groceries', 'kitchen-accessories'];
+let kataKunci = '';
 let halamanSaatIni = 1;
 let perHalaman = 10;
 
@@ -29,15 +35,30 @@ function tampilkanStatus(jenis, pesan) {
 }
 
 // ===== Tampilkan / sembunyikan loading indicator =====
-function aturLoading(tampil) {
+function aturLoading(tampil, teks = 'Memuat data produk...') {
+  loadingTeksEl.textContent = teks;
   loadingEl.hidden = !tampil;
 }
 
-// ===== Ambil produk sesuai kategori yang dipantau =====
+// ===== Ambil produk sesuai kategori & kata kunci =====
 function ambilProdukTampil() {
   return semuaProduk.filter(produk =>
     kategoriAktif.includes(produk.category) &&
-    !KATA_DIKECUALIKAN.some(kata => produk.title.toLowerCase().includes(kata))
+    !KATA_DIKECUALIKAN.some(kata => produk.title.toLowerCase().includes(kata)) &&
+    produk.title.toLowerCase().includes(kataKunci)
+  );
+}
+
+// ===== Status hasil (dipakai pencarian dan form) =====
+function perbaruiStatusHasil() {
+  if (semuaProduk.length === 0) return;
+
+  const jumlah = ambilProdukTampil().length;
+  tampilkanStatus(
+    'sukses',
+    kataKunci
+      ? `Ditemukan ${jumlah} produk untuk "${kataKunci}".`
+      : `Menampilkan ${jumlah} produk dari kategori yang dipantau.`
   );
 }
 
@@ -180,5 +201,96 @@ perHalamanEl.addEventListener('change', () => {
   tampilkanHalaman();
 });
 
+// ===== Debounce: tunda fungsi sampai pengguna berhenti mengetik =====
+function debounce(fungsi, jeda = 400) {
+  let timer;
+  return (...argumen) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fungsi(...argumen), jeda);
+  };
+}
+
+// ===== Pencarian produk =====
+const jalankanPencarian = debounce(() => {
+  kataKunci = cariEl.value.trim().toLowerCase();
+  halamanSaatIni = 1;
+  tampilkanHalaman();
+  aturLoading(false);
+  perbaruiStatusHasil();
+}, 400);
+
+cariEl.addEventListener('input', () => {
+  aturLoading(true, 'Mencari produk...');
+  jalankanPencarian();
+});
+
+// ===== Pesan untuk form =====
+function tampilkanPesanForm(jenis, pesan) {
+  pesanFormEl.className = jenis;
+  pesanFormEl.textContent = pesan;
+}
+
+// ===== localStorage: simpan & muat preferensi kategori =====
+function simpanPreferensi(daftar) {
+  try {
+    localStorage.setItem(KUNCI_PREFERENSI, JSON.stringify(daftar));
+  } catch (error) {
+    console.warn('Preferensi tidak bisa disimpan:', error);
+  }
+}
+
+function muatPreferensi() {
+  const kategoriValid = Array.from(
+    formEl.querySelectorAll('input[name="kategori"]')
+  ).map(input => input.value);
+
+  try {
+    const tersimpan = JSON.parse(localStorage.getItem(KUNCI_PREFERENSI));
+
+    if (Array.isArray(tersimpan)) {
+      const bersih = tersimpan.filter(nilai => kategoriValid.includes(nilai));
+      if (bersih.length > 0) {
+        kategoriAktif = bersih;
+      }
+    }
+  } catch (error) {
+    console.warn('Preferensi tidak bisa dibaca:', error);
+  }
+
+  formEl.querySelectorAll('input[name="kategori"]').forEach(input => {
+    input.checked = kategoriAktif.includes(input.value);
+  });
+}
+
+// ===== Validasi & simpan preferensi =====
+formEl.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const terpilih = Array.from(
+    formEl.querySelectorAll('input[name="kategori"]:checked')
+  ).map(input => input.value);
+
+  if (terpilih.length === 0) {
+    tampilkanPesanForm('error', 'Pilih minimal satu kategori yang ingin dipantau.');
+    formEl.querySelector('input[name="kategori"]').focus();
+    return; // input tidak valid tidak diproses
+  }
+
+  kategoriAktif = terpilih;
+  halamanSaatIni = 1;
+  simpanPreferensi(terpilih);
+  tampilkanHalaman();
+  perbaruiStatusHasil();
+  tampilkanPesanForm('sukses', `Preferensi disimpan: ${terpilih.length} kategori dipantau.`);
+});
+
+// ===== Hapus pesan error saat pengguna memperbaiki pilihan =====
+formEl.addEventListener('change', () => {
+  if (pesanFormEl.classList.contains('error')) {
+    tampilkanPesanForm('', '');
+  }
+});
+
 // ===== Jalankan saat halaman dibuka =====
+muatPreferensi();
 loadData();
