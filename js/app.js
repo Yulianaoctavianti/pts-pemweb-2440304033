@@ -11,10 +11,16 @@ const daftarEl = document.querySelector('#daftar-produk');
 const statRataEl = document.querySelector('#stat-rata');
 const statTermahalEl = document.querySelector('#stat-termahal');
 const statKategoriEl = document.querySelector('#stat-kategori');
+const perHalamanEl = document.querySelector('#per-halaman');
+const prevEl = document.querySelector('#btn-prev');
+const nextEl = document.querySelector('#btn-next');
+const infoHalamanEl = document.querySelector('#info-halaman');
 
 // ===== State =====
 let semuaProduk = [];
 let kategoriAktif = ['groceries', 'kitchen-accessories'];
+let halamanSaatIni = 1;
+let perHalaman = 10;
 
 // ===== Tampilkan status (sukses / error) =====
 function tampilkanStatus(jenis, pesan) {
@@ -50,17 +56,13 @@ async function loadData() {
     const data = await response.json();
     semuaProduk = data.products;
 
-    // Sementara: lihat judul produk yang lolos filter, hapus setelah dicek
-    // console.log(ambilProdukTampil().map(produk => produk.title));
-
     const produkTampil = ambilProdukTampil();
 
     tampilkanStatus(
       'sukses',
       `Berhasil memuat ${semuaProduk.length} produk. Menampilkan ${produkTampil.length} produk dari kategori yang dipantau.`
     );
-    tampilkanRingkasan(produkTampil);
-    renderProduk(produkTampil.slice(0, 10)); // sementara, diganti pagination
+    tampilkanHalaman();
   } catch (error) {
     console.error(error);
     if (error instanceof TypeError) {
@@ -140,6 +142,43 @@ function tampilkanRingkasan(daftar) {
   statTermahalEl.textContent = `${termahal.title} (${formatHarga(termahal.price)})`;
   statKategoriEl.textContent = jumlahKategori;
 }
+
+// ===== Tampilkan satu halaman data =====
+function tampilkanHalaman() {
+  const daftar = ambilProdukTampil();
+  const totalHalaman = Math.max(1, Math.ceil(daftar.length / perHalaman));
+
+  if (halamanSaatIni > totalHalaman) {
+    halamanSaatIni = totalHalaman;
+  }
+
+  const mulai = (halamanSaatIni - 1) * perHalaman;
+  const potongan = daftar.slice(mulai, mulai + perHalaman);
+
+  renderProduk(potongan);
+  tampilkanRingkasan(daftar);
+
+  infoHalamanEl.textContent = `Halaman ${halamanSaatIni} dari ${totalHalaman}`;
+  prevEl.disabled = halamanSaatIni <= 1;
+  nextEl.disabled = halamanSaatIni >= totalHalaman;
+}
+
+// ===== Event pagination =====
+prevEl.addEventListener('click', () => {
+  halamanSaatIni--;
+  tampilkanHalaman();
+});
+
+nextEl.addEventListener('click', () => {
+  halamanSaatIni++;
+  tampilkanHalaman();
+});
+
+perHalamanEl.addEventListener('change', () => {
+  perHalaman = Number(perHalamanEl.value);
+  halamanSaatIni = 1;
+  tampilkanHalaman();
+});
 
 // ===== Jalankan saat halaman dibuka =====
 loadData();
