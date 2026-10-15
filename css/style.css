@@ -160,22 +160,23 @@ button:disabled {
   margin-bottom: 12px;
 }
 
-#status {
+/* ===== Loading indicator ===== */
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   min-height: 1.5em;
   font-weight: 600;
+  color: var(--ungu);
 }
 
-#status.error { color: var(--error); }
-#status.sukses { color: var(--sukses); }
-#status.loading { color: var(--ungu); }
+.loading[hidden] {
+  display: none;
+}
 
-#status.loading::before {
-  content: '';
-  display: inline-block;
+.spinner {
   width: 1em;
   height: 1em;
-  margin-right: 8px;
-  vertical-align: -0.15em;
   border: 3px solid var(--garis);
   border-top-color: var(--ungu);
   border-radius: 50%;
@@ -187,9 +188,19 @@ button:disabled {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #status.loading::before { animation: none; }
+  .spinner { animation: none; }
 }
 
+/* ===== Status sukses / error ===== */
+#status {
+  min-height: 1.5em;
+  font-weight: 600;
+}
+
+#status.error { color: var(--error); }
+#status.sukses { color: var(--sukses); }
+
+/* ===== Kartu produk ===== */
 .grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -240,7 +251,7 @@ button:disabled {
 /* ===== Tablet (>= 600px) ===== */
 @media (min-width: 600px) {
   .stats {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .kontrol {
