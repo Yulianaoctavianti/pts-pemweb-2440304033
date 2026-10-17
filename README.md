@@ -160,7 +160,7 @@ Setelah menambahkan fitur pencarian dan validasi, halaman tidak menampilkan prod
 
 ## 10. AI Usage Log
 
-Log ini mencatat penggunaan AI secara jujur. Isi bagian "Yang saya lakukan sendiri" harus sesuai kenyataan.
+
 
 | No | Tanggal | Alat | Tujuan | Yang saya lakukan sendiri |
 |---|---|---|---|---|
@@ -177,4 +177,4 @@ Saya memahami seluruh kode yang dikumpulkan dan bersedia menjelaskannya saat ses
 
 - Repository GitHub: `https://github.com/Yulianaoctavianti/pts-pemweb-2440304033`
 - Tag rilis: `v0.1-PTS`
-- Video demo: **[ISI LINK VIDEO DI SINI]**
+- Video demo: **- Video demo: [Tonton video demo di YouTube](https://youtu.be/uzadtjEoxhk)**
